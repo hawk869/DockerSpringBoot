@@ -1,7 +1,9 @@
 package com.danielcepeda.msvccursos.controller;
 
-import com.danielcepeda.msvccursos.entity.Curso;
+import com.danielcepeda.msvccursos.models.Usuario;
+import com.danielcepeda.msvccursos.models.entity.Curso;
 import com.danielcepeda.msvccursos.service.CursoService;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +29,7 @@ public class CursoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCursoById(@PathVariable Long id){
-        Optional<Curso> curso = service.porID(id);
+        Optional<Curso> curso = service.porIdDeUsuarios(id);  //service.porID(id);
         if (curso.isPresent()){
             return ResponseEntity.ok(curso.get());
         }
@@ -63,6 +66,55 @@ public class CursoController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+    @PutMapping("/asignar-usuario/{cursoId}")
+    public ResponseEntity<?> asignarUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+        Optional<Usuario> optionalUsuario;
+        try {
+            optionalUsuario = service.asignarUsuario(usuario, cursoId);
+        }catch (FeignException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("mensaje", "Error en la comunicacion: " + e.getMessage()));
+        }
+        if (optionalUsuario.isPresent()){
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUsuario.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @PostMapping("/crear-usuario/{cursoId}")
+    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+        Optional<Usuario> optionalUsuario;
+        try {
+            optionalUsuario = service.crearUsuario(usuario, cursoId);
+        }catch (FeignException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("mensaje", "Error " +
+                            "en la comunicacion con el servidor: " + e.getMessage()));
+        }
+        if (optionalUsuario.isPresent()){
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUsuario.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/eliminar-usuario/{cursoId}")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+        Optional<Usuario> optionalUsuario;
+        try {
+            optionalUsuario = service.eliminarUsuario(usuario, cursoId);
+        }catch (FeignException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("mensaje", "Error en la comunicacion: " + e.getMessage()));
+        }
+        if (optionalUsuario.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(optionalUsuario.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @DeleteMapping("/eliminar-curso-usuario/{id}")
+    public ResponseEntity<?> eliminarCursoUsuarioPorId(@PathVariable Long id){
+        service.eliminarCursoUsuarioPorId(id);
+        return ResponseEntity.noContent().build();
     }
 
     private static ResponseEntity<Map<String, String>> validar(BindingResult result) {

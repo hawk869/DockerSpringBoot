@@ -32,12 +32,12 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result){
-        if (service.porEmail(usuario.getEmail()).isPresent()){
-            return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("mensaje", "Ya existe un usuario con en ese email"));
-        }
         if (result.hasErrors()){
             return validar(result);
+        }
+        if (service.existeEmail(usuario.getEmail())){
+            return ResponseEntity.badRequest()
+                    .body(Collections.singletonMap("mensaje", "Ya existe un usuario con en ese email"));
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(usuario));
     }
@@ -50,7 +50,9 @@ public class UsuarioController {
         Optional<Usuario> usuarioOptional = service.findById(id);
         if (usuarioOptional.isPresent()){
             Usuario usuarioActualizado = usuarioOptional.get();
-            if (!usuario.getEmail().equalsIgnoreCase(usuarioActualizado.getEmail()) && service.porEmail(usuario.getEmail()).isPresent()){
+            if (!usuario.getEmail().isEmpty() &&
+                    !usuario.getEmail().equalsIgnoreCase(usuarioActualizado.getEmail()) &&
+                    service.porEmail(usuario.getEmail()).isPresent()){
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("mensaje", "Ya existe un usuario con en ese email"));
             }
@@ -69,6 +71,10 @@ public class UsuarioController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/usuarios-por-curso")
+    public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> usuariosIds){
+        return ResponseEntity.ok(service.listarPorIds(usuariosIds));
     }
     private static ResponseEntity<Map<String, String>> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
