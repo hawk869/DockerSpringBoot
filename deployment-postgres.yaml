@@ -19,9 +19,15 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: danielesteban
+              valueFrom:
+                secretKeyRef:
+                  name: msvc-cursos
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: danielesteban
+              valueFrom:
+                secretKeyRef:
+                  name: msvc-cursos
+                  key: password
             - name: POSTGRES_DB
               value: msvc_cursos
           volumeMounts:
