@@ -9,6 +9,9 @@ data:
 #  username: root
 #  password: mintic21
   curso_url: "msvc-cursos:8002"
+  application.yaml: |-
+    config:
+      texto: configurando ambiente por defecto
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -17,3 +17,12 @@ spec:
         name: usuarios
         ports:
         - containerPort: 8001
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
