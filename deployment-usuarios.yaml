@@ -13,7 +13,7 @@ spec:
         app: msvc-usuarios
     spec:
       containers:
-      - image: hawk867/usuarios:latest
+      - image: hawk867/v2usuarios:latest
         name: usuarios
         ports:
         - containerPort: 8001
@@ -26,19 +26,26 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-        readinessProbe:
-          httpGet:
-            path: /actuator/health/readiness
-            port: 8001
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 20
-          timeoutSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /actuator/health/liveness
-            port: 8001
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 30
-          timeoutSeconds: 10
+#        readinessProbe:
+#          httpGet:
+#            path: /actuator/health/readiness
+#            port: 8001
+#            scheme: HTTP
+#          initialDelaySeconds: 10
+#          periodSeconds: 20
+#          timeoutSeconds: 10
+#        livenessProbe:
+#          httpGet:
+#            path: /actuator/health/liveness
+#            port: 8001
+#            scheme: HTTP
+#          initialDelaySeconds: 10
+#          periodSeconds: 30
+#          timeoutSeconds: 10
+#        resources:
+#          requests:
+#            memory: "512Mi"
+#            cpu: "400m"
+#          limits:
+#            memory: "800Mi"
+#            cpu: "500m"

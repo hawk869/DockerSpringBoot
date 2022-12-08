@@ -1,6 +1,6 @@
 ARG MSVC_NAME=msvc-usuarios
 
-FROM openjdk:18-jdk-alpine as builder
+FROM openjdk:oracle as builder
 ARG MSVC_NAME
 WORKDIR /app/$MSVC_NAME
 
@@ -16,7 +16,7 @@ COPY ./$MSVC_NAME/src ./src
 
 RUN ./mvnw clean package -DskipTests
 
-FROM openjdk:18-jdk-alpine
+FROM openjdk:oracle
 
 ARG MSVC_NAME
 

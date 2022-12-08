@@ -1,4 +1,4 @@
-FROM openjdk:18-jdk-alpine as builder
+FROM openjdk:oracle as builder
 WORKDIR /app/msvc-cursos
 
 COPY ./pom.xml /app
@@ -13,7 +13,7 @@ COPY ./msvc-cursos/src ./src
 
 RUN ./mvnw clean package -DskipTests
 
-FROM openjdk:18-jdk-alpine
+FROM openjdk:oracle
 
 WORKDIR /app
 RUN mkdir ./logs
