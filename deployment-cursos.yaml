@@ -13,7 +13,7 @@ spec:
         app: msvc-cursos
     spec:
       containers:
-        - image: hawk867/v2cursos:latest
+        - image: hawk867/cursos:latest
           name: cursos
           ports:
             - containerPort: 8002
