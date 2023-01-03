@@ -94,6 +94,11 @@ public class UsuarioController {
     public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> usuariosIds){
         return ResponseEntity.ok(service.listarPorIds(usuariosIds));
     }
+
+    @GetMapping("/authorized")
+    public Map<String, Object> authorized(@RequestParam String code){
+        return Collections.singletonMap("code", code);
+    }
     private static ResponseEntity<Map<String, String>> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(e -> {
