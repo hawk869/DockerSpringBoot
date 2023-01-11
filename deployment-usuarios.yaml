@@ -13,11 +13,21 @@ spec:
         app: msvc-usuarios
     spec:
       containers:
-      - image: hawk867/usuarios:latest
+      - image: hawk867/v2usuarios:latest
         name: usuarios
         ports:
         - containerPort: 8001
         env:
+          - name: LB_AUTH_ISSUER_URI
+            valueFrom:
+              configMapKeyRef:
+                name: msvc-usuarios
+                key: lb_auth_issuer_uri
+          - name: LB_USUARIOS_URI
+            valueFrom:
+              configMapKeyRef:
+                name: msvc-usuarios
+                key: lb_usuarios_uri
           - name: MY_POD_NAME
             valueFrom:
               fieldRef:
